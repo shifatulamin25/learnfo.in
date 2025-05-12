@@ -1,67 +1,41 @@
-// JavaScript for full-screen mobile menu
 document.addEventListener('DOMContentLoaded', function() {
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
-    //const searchContainer = document.querySelector('.search-container');
-    const navLinkItems = document.querySelectorAll('.nav-link');
+    const navbarToggle = document.querySelector('.navbar-toggle');
+    const navbarMenu = document.querySelector('.navbar-menu');
+    const navbarSearch = document.querySelector('.navbar-search');
     
-    // Toggle mobile menu
-    hamburger.addEventListener('click', function() {
-        this.classList.toggle('active');
-        navLinks.classList.toggle('active');
-        searchContainer.classList.toggle('active');
-        
-        // Toggle body scroll when menu is open
-        if (navLinks.classList.contains('active')) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
+    navbarToggle.addEventListener('click', function() {
+        navbarToggle.classList.toggle('active');
+        navbarMenu.classList.toggle('active');
+        navbarSearch.classList.toggle('active');
+    });
+    
+    // Close menu when clicking on a link (for mobile)
+    const navbarLinks = document.querySelectorAll('.navbar-link');
+    navbarLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 600) {
+                navbarToggle.classList.remove('active');
+                navbarMenu.classList.remove('active');
+                navbarSearch.classList.remove('active');
+            }
+        });
+    });
+    
+    // Optional: Add search functionality
+    const searchButton = document.querySelector('.search-button');
+    const searchInput = document.querySelector('.search-input');
+    
+    searchButton.addEventListener('click', function() {
+        if (searchInput.value.trim() !== '') {
+            alert('Searching for: ' + searchInput.value);
+            // In a real application, you would redirect or fetch results here
         }
     });
     
-    // Close menu when a nav link is clicked
-    navLinkItems.forEach(item => {
-        item.addEventListener('click', function() {
-            hamburger.classList.remove('active');
-            navLinks.classList.remove('active');
-            searchContainer.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        });
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && searchInput.value.trim() !== '') {
+            alert('Searching for: ' + searchInput.value);
+            // In a real application, you would redirect or fetch results here
+        }
     });
-    
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 100,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-    
-    // Animation for elements when they come into view
-    const animateOnScroll = function() {
-        const elements = document.querySelectorAll('.animated-text, .animated-image');
-        
-        elements.forEach(element => {
-            const elementPosition = element.getBoundingClientRect().top;
-            const windowHeight = window.innerHeight;
-            
-            if (elementPosition < windowHeight - 100) {
-                element.style.opacity = '1';
-                element.style.transform = 'translateY(0)';
-            }
-        });
-    };
-    
-    window.addEventListener('scroll', animateOnScroll);
-    animateOnScroll(); // Run once on page load
 });
