@@ -724,7 +724,7 @@ transition: transform 0.3s ease;
 
 
 
-@media (max-width: 365px) {
+@media (max-width: 381px) {
 .developer-card {
   width: 100%;
   max-width: 2000px;
