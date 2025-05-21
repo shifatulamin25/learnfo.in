@@ -166,6 +166,7 @@ body {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
+
 }
 
 .navbar-logo {
@@ -425,7 +426,7 @@ body {
 
 .box {
   padding: 20px 90px;
-  background-color: #101310;
+  background-color: #2e2359;
   color: white;
   text-decoration: none;
   border-radius: 4px;
@@ -500,7 +501,7 @@ boss {
 gap: 5px;
 width: 100%;
 max-width: 3000px;
-padding: 25px;
+padding: 15px;
 display: grid;
 background: rgba(255, 255, 255, 0.08);
 border-radius: 10px;
@@ -541,7 +542,7 @@ transition: transform 0.3s ease;
 
 
   .box {
-    padding: 10px 10px;
+    padding: 10px 8px;
     color: white;
     text-decoration: none;
     border-radius: 4px;
@@ -706,7 +707,7 @@ transition: transform 0.3s ease;
   display: block;
   width: 300px;
   padding: 20px;
-  background-color: #080b09;
+  background-color: #2e2359;
   color: white;
   text-decoration: none;
   text-align: center;
@@ -733,7 +734,39 @@ transition: transform 0.3s ease;
     width: 120px;
     height: 120px;
   }
+  .container {
+  gap: 5px;
+  flex-direction: row;
 }
+
+
+.column-box {
+  display: block;
+  width: 200px;
+  padding: 7px;
+
+}
+}
+
+
+
+@media (max-width: 689px) {
+  .container {
+  gap: 5px;
+  flex-direction: row;
+}
+
+
+.column-box {
+  display: block;
+  width: 150px;
+  padding: 7px;
+
+}
+}
+
+
+
 
 
 
@@ -847,7 +880,7 @@ transition: transform 0.3s ease;
 
 .column-box {
   display: block;
-  width: 180px;
+  width: 150px;
   padding: 7px;
 
 }
