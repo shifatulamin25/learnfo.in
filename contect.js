@@ -1,31 +1,50 @@
 document.addEventListener('DOMContentLoaded', function() {
     const contactForm = document.getElementById('contactForm');
+    const messageContainer = document.getElementById('messageContainer');
     
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Get form values
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const subject = document.getElementById('subject').value.trim();
-        const message = document.getElementById('message').value.trim();
-        const attachment = document.getElementById('attachment').files[0];
+        // Show loading state
+        const submitBtn = contactForm.querySelector('.submit-btn');
+        const btnText = submitBtn.querySelector('.btn-text');
+        const originalText = btnText.textContent;
+        btnText.textContent = 'Sending...';
+        submitBtn.disabled = true;
         
-        // Basic validation
-        if (!name || !email || !subject || !message) {
-            alert('Please fill in all required fields');
-            return;
-        }
+        // Create FormData object
+        const formData = new FormData(contactForm);
         
-        // Create mailto link
-        let mailtoLink = `mailto:learnfo25@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
-            `Name: ${name}%0AEmail: ${email}%0A%0AMessage:%0A${message}`
-        )}`;
-        
-        // Open email client
-        window.location.href = mailtoLink;
-        
-        // Note: Attachments cannot be added via mailto links
-        // The user will need to manually attach files in their email client
+        // Send form data via fetch
+        fetch(contactForm.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showMessage('Message sent successfully!', 'success');
+                contactForm.reset();
+            } else {
+                showMessage(data.message || 'Error sending message', 'error');
+            }
+        })
+        .catch(error => {
+            showMessage('Network error. Please try again.', 'error');
+        })
+        .finally(() => {
+            btnText.textContent = originalText;
+            submitBtn.disabled = false;
+        });
     });
+    
+    function showMessage(text, type) {
+        messageContainer.textContent = text;
+        messageContainer.className = type + '-message show';
+        
+        // Hide message after 5 seconds
+        setTimeout(() => {
+            messageContainer.classList.remove('show');
+        }, 5000);
+    }
 });
