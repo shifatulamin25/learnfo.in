@@ -28,7 +28,7 @@
             <section class="contact-section">
                 <h2>Get In Touch</h2>
                 <div class="contact-form">
-                    <form id="contactForm">
+                    <form id="contactForm" action="send_email.php" method="POST" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="name">Your Name:</label>
                             <input type="text" id="name" name="name" required>
@@ -52,10 +52,12 @@
                         <div class="form-group file-upload">
                             <label for="attachment">Attach File (PDF/Image):</label>
                             <input type="file" id="attachment" name="attachment" accept=".pdf,.jpg,.jpeg,.png">
+                            <small>Max file size: 5MB</small>
                         </div>
                         
                         <button type="submit" class="submit-btn">
-                            <i class="fas fa-paper-plane"></i> Send Message
+                            <span class="btn-text">Send Message</span>
+                            <span class="btn-icon"><i class="fas fa-paper-plane"></i></span>
                         </button>
                     </form>
                 </div>
@@ -63,11 +65,18 @@
 
             <section class="direct-contact">
                 <h3>Direct Contact</h3>
-                <p>Email: <a href="mailto:learnfo25@gmail.com">learnfo25@gmail.com</a></p>
+                <div class="contact-methods">
+                    <div class="contact-method">
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:learnfo25@gmail.com">learnfo25@gmail.com</a>
+                    </div>
+                </div>
             </section>
         </main>
     </div>
 
-    <script src="contect.js"></script>
+    <div id="messageContainer"></div>
+
+    <script src="script.js"></script>
 </body>
 </html>
