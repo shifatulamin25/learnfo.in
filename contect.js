@@ -1,174 +1,80 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Mobile menu toggle
-    const toggler = document.querySelector('.navbar-toggler');
-    const nav = document.querySelector('.navbar-nav');
+    const navbarToggler = document.getElementById('navbar-toggler');
+    const navbarNav = document.querySelector('.navbar-nav');
     
-    if (toggler && nav) {
-        toggler.addEventListener('click', function() {
-            nav.classList.toggle('active');
-            this.classList.toggle('open');
-        });
-    }
-
-    // File upload handling
-    const fileInput = document.getElementById('attachments');
-    const fileList = document.getElementById('fileList');
+    navbarToggler.addEventListener('click', function() {
+        navbarNav.classList.toggle('active');
+    });
     
-    if (fileInput && fileList) {
-        fileInput.addEventListener('change', function() {
-            fileList.innerHTML = '';
-            
-            if (this.files && this.files.length > 0) {
-                Array.from(this.files).forEach((file, index) => {
-                    const fileItem = document.createElement('div');
-                    fileItem.className = 'file-item';
-                    
-                    const fileName = document.createElement('span');
-                    fileName.textContent = file.name.length > 20 
-                        ? `${file.name.substring(0, 17)}...` 
-                        : file.name;
-                    fileName.title = file.name;
-                    
-                    const fileSize = document.createElement('span');
-                    fileSize.className = 'file-size';
-                    fileSize.textContent = formatFileSize(file.size);
-                    
-                    const removeBtn = document.createElement('i');
-                    removeBtn.className = 'fas fa-times';
-                    removeBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        // Create new DataTransfer to remove the file
-                        const dataTransfer = new DataTransfer();
-                        const filesArray = Array.from(fileInput.files);
-                        filesArray.splice(index, 1);
-                        
-                        filesArray.forEach(f => dataTransfer.items.add(f));
-                        fileInput.files = dataTransfer.files;
-                        
-                        fileItem.remove();
-                    });
-                    
-                    fileItem.appendChild(fileName);
-                    fileItem.appendChild(fileSize);
-                    fileItem.appendChild(removeBtn);
-                    fileList.appendChild(fileItem);
-                });
+    // Close mobile menu when clicking on a link
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                navbarNav.classList.remove('active');
             }
         });
-        
-        // Drag and drop functionality
-        const fileUploadLabel = document.querySelector('.file-upload-label');
-        
-        if (fileUploadLabel) {
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                fileUploadLabel.addEventListener(eventName, preventDefaults, false);
-            });
-            
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            
-            ['dragenter', 'dragover'].forEach(eventName => {
-                fileUploadLabel.addEventListener(eventName, highlight, false);
-            });
-            
-            ['dragleave', 'drop'].forEach(eventName => {
-                fileUploadLabel.addEventListener(eventName, unhighlight, false);
-            });
-            
-            function highlight() {
-                fileUploadLabel.classList.add('highlight');
-            }
-            
-            function unhighlight() {
-                fileUploadLabel.classList.remove('highlight');
-            }
-            
-            fileUploadLabel.addEventListener('drop', handleDrop, false);
-            
-            function handleDrop(e) {
-                const dt = e.dataTransfer;
-                if (dt.files && dt.files.length > 0) {
-                    fileInput.files = dt.files;
-                    const event = new Event('change');
-                    fileInput.dispatchEvent(event);
-                }
-            }
-        }
-    }
+    });
     
-    // Form submission handling
-    const contactForm = document.getElementById('contactForm');
-    const statusMessage = document.getElementById('statusMessage');
+    // Email button functionality
+    const emailButton = document.getElementById('email-button');
+    emailButton.addEventListener('click', function() {
+        window.location.href = 'mailto:learnfo25@gmail.com?subject=Contact%20from%20Website';
+    });
     
-    if (contactForm && statusMessage) {
-        contactForm.addEventListener('submit', async function(e) {
+    // Call button functionality
+    const callButton = document.getElementById('call-button');
+    callButton.addEventListener('click', function() {
+        // In a real implementation, this would initiate a phone call on mobile
+        alert('This would initiate a call to +1 (555) 123-4567 on a mobile device');
+    });
+    
+    // Smooth scrolling for all links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
             e.preventDefault();
             
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            submitBtn.disabled = true;
-            statusMessage.className = 'status-message';
-            statusMessage.textContent = '';
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
             
-            try {
-                const formData = new FormData(this);
-                const response = await fetch(this.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
                 });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                
-                if (data.success) {
-                    statusMessage.className = 'status-message success';
-                    statusMessage.textContent = data.message;
-                    contactForm.reset();
-                    if (fileList) fileList.innerHTML = '';
-                } else {
-                    statusMessage.className = 'status-message error';
-                    statusMessage.textContent = data.message || 'Form submission failed';
-                    if (data.errors) {
-                        console.error('Validation errors:', data.errors);
-                    }
-                }
-            } catch (error) {
-                console.error('Submission error:', error);
-                statusMessage.className = 'status-message error';
-                statusMessage.textContent = determineErrorMessage(error);
-            } finally {
-                submitBtn.innerHTML = originalBtnText;
-                submitBtn.disabled = false;
             }
         });
-    }
-
-    function determineErrorMessage(error) {
-        if (error.message.includes('Failed to fetch')) {
-            return 'Network error: Please check your internet connection';
-        } else if (error.message.includes('HTTP error')) {
-            return 'Server error: Please try again later';
-        } else if (error instanceof SyntaxError) {
-            return 'Invalid server response';
-        } else {
-            return 'An unexpected error occurred';
-        }
-    }
-
-    function formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
+    });
+    
+    // Add animation to elements when they come into view
+    const animatedElements = document.querySelectorAll('.contact-card, .info-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    animatedElements.forEach(element => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(element);
+    });
+    
+    // Social media links functionality
+    const socialLinks = document.querySelectorAll('.social-link');
+    socialLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            // In a real implementation, these would link to actual social media profiles
+            const platform = this.getAttribute('aria-label');
+            alert(`This would link to the developer's ${platform} profile in a real implementation.`);
+        });
+    });
 });
