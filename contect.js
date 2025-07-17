@@ -17,17 +17,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Email button functionality
+    // Email button functionality - directly opens default email app
     const emailButton = document.getElementById('email-button');
     emailButton.addEventListener('click', function() {
-        window.location.href = 'mailto:learnfo25@gmail.com?subject=Contact%20from%20Website';
+        const subject = encodeURIComponent('Contact from Learnfo Website');
+        const body = encodeURIComponent('Hello Alex,\n\nI would like to get in touch regarding...');
+        window.location.href = `mailto:learnfo25@gmail.com?subject=${subject}&body=${body}`;
     });
     
     // Call button functionality
     const callButton = document.getElementById('call-button');
     callButton.addEventListener('click', function() {
-        // In a real implementation, this would initiate a phone call on mobile
-        alert('This would initiate a call to +1 (555) 123-4567 on a mobile device');
+        // On mobile devices, this will prompt to call the number
+        // On desktop, it will show an alert
+        if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            window.location.href = 'tel:+15551234567';
+        } else {
+            alert('Please call +1 (555) 123-4567');
+        }
     });
     
     // Smooth scrolling for all links
@@ -72,7 +79,6 @@ document.addEventListener('DOMContentLoaded', function() {
     socialLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            // In a real implementation, these would link to actual social media profiles
             const platform = this.getAttribute('aria-label');
             alert(`This would link to the developer's ${platform} profile in a real implementation.`);
         });
