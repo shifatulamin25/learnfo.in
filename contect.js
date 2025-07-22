@@ -21,20 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const emailButton = document.getElementById('email-button');
     emailButton.addEventListener('click', function() {
         const subject = encodeURIComponent('Contact from Learnfo Website');
-        const body = encodeURIComponent('Hello Alex,\n\nI would like to get in touch regarding...');
+        const body = encodeURIComponent('Hello Shifatul,\n\nI would like to get in touch regarding...');
         window.location.href = `mailto:learnfo25@gmail.com?subject=${subject}&body=${body}`;
-    });
-    
-    // Call button functionality
-    const callButton = document.getElementById('call-button');
-    callButton.addEventListener('click', function() {
-        // On mobile devices, this will prompt to call the number
-        // On desktop, it will show an alert
-        if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            window.location.href = 'tel:+15551234567';
-        } else {
-            alert('Please call +1 (555) 123-4567');
-        }
     });
     
     // Smooth scrolling for all links
