@@ -62,13 +62,4 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(element);
     });
     
-    // Social media links functionality
-    const socialLinks = document.querySelectorAll('.social-link');
-    socialLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const platform = this.getAttribute('aria-label');
-            alert(`This would link to the developer's ${platform} profile in a real implementation.`);
-        });
-    });
 });
