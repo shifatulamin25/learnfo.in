@@ -2217,11 +2217,11 @@ main {
 
 @media (max-width: 768px) {
   .hamburger {
-      display: flex;
+      display: block;
   }
   
   .nav-links {
-      position: fixed;
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
@@ -2243,18 +2243,10 @@ main {
       opacity: 1;
   }
   
-  .nav-link {
-      color: #f4f4f4;
-      font-size: 1.5rem;
-      margin: 1rem 0;
-      padding: 1rem 2rem;
-      border-radius: 5px;
-      transition: all 0.3s;
-  }
-  
   .nav-link:hover {
       background-color: rgba(255, 255, 255, 0.1);
   }
+  
   
   .search-container {
       display: none;
