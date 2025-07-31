@@ -61,22 +61,6 @@
             height: calc(100% - 60px); /* Accounts for control bar height */
         }
 
-/* Adjust media queries accordingly */
-@media (max-width: 768px) {
-        .pdf-container {
-        height: 70vh;
-        min-height: 400px;
-    }
-}
-
-@media (max-width: 480px) {
-    .pdf-container {
-        height: 65vh;
-        min-height: 300px;
-        margin: 0.5rem;
-    }
-}
-        
         .pdf-controls {
             display: flex;
             justify-content: center;
@@ -123,6 +107,8 @@
         
         @media (max-width: 768px) {
             .pdf-container {
+                height: 70vh;
+                min-height: 400px;
                 margin: 0.5rem;
                 padding: 0.5rem;
             }
@@ -144,12 +130,25 @@
         }
         
         @media (max-width: 480px) {
-            .pdf-controls {
-                gap: 0.5rem;
+            .pdf-container {
+                height: 65vh;
+                min-height: 300px;
+                margin: 0.5rem;
+                padding: 0.5rem;
             }
             
-            button {
+            .pdf-controls {
+                display: none; /* Hide controls on small devices */
+            }
+            
+            .pdf-viewer {
+                height: 100%; /* Take full height when controls are hidden */
+                margin-bottom: 0;
+            }
+            
+            .pdf-nav a {
                 padding: 0.2rem 0.4rem;
+                margin: 0.1rem;
                 font-size: 0.8rem;
             }
         }
@@ -217,39 +216,27 @@
                 });
             });
             
-            // Zoom in button
-            zoomInBtn.addEventListener('click', function() {
-                if (zoomLevel < maxZoom) {
-                    zoomLevel += zoomStep;
-                    updateZoom();
-                }
-            });
-            
-            // Zoom out button
-            zoomOutBtn.addEventListener('click', function() {
-                if (zoomLevel > minZoom) {
-                    zoomLevel -= zoomStep;
-                    updateZoom();
-                }
-            });
-            
-            // Fit width button
-            fitWidthBtn.addEventListener('click', function() {
-                pdfFrame.style.width = '100%';
-                pdfFrame.style.height = '100%';
-                zoomLevel = 1;
-            });
-            
-            // Fit page button
-            fitPageBtn.addEventListener('click', function() {
-                pdfFrame.style.width = '100%';
-                pdfFrame.style.height = '100%';
-                zoomLevel = 1;
-            });
+            // Only add zoom functionality if buttons exist (for mobile they'll be hidden)
+            if (zoomInBtn && zoomOutBtn) {
+                // Zoom in button
+                zoomInBtn.addEventListener('click', function() {
+                    if (zoomLevel < maxZoom) {
+                        zoomLevel += zoomStep;
+                        updateZoom();
+                    }
+                });
+                
+                // Zoom out button
+                zoomOutBtn.addEventListener('click', function() {
+                    if (zoomLevel > minZoom) {
+                        zoomLevel -= zoomStep;
+                        updateZoom();
+                    }
+                });
+            }
             
             // Function to load PDF
             function loadPdf(pdfUrl) {
-                
                 // Clear previous PDF
                 pdfFrame.src = '';
                 
