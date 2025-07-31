@@ -1,157 +1,299 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Learnfo.in</title>
-  <link rel="icon" href="PHOTOS/main.logo.png" type="image/x-icon" />
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    header {
-      background-color: #141313;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-    }
-
-    .navbar-brand {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: white;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-style: italic;
-    }
-
-    .pdf-nav {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      padding: 0.5rem;
-      background-color: #f0f0f0;
-    }
-
-    .pdf-nav a {
-      padding: 0.5rem 1rem;
-      margin: 0.2rem;
-      background-color: #333;
-      color: white;
-      text-decoration: none;
-      border-radius: 4px;
-      transition: background-color 0.3s;
-      font-size: 0.9rem;
-    }
-
-    .pdf-nav a:hover,
-    .pdf-nav a.active {
-      background-color: #4caf50;
-    }
-
-    .pdf-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background-color: white;
-    }
-
-    .pdf-viewer-container {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .pdf-viewer {
-      width: 100%;
-      height: 100vh;
-      border: none;
-    }
-
-    /* Mobile fixes */
-    @media (max-width: 600px) {
-      .pdf-controls {
-        display: none;
-      }
-
-      .navbar-brand {
-        font-size: 1.2rem;
-      }
-
-      .pdf-nav a {
-        padding: 0.4rem 0.7rem;
-        font-size: 0.75rem;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure PDF Viewer</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+        
+        .pdf-selector {
+            padding: 15px;
+            background-color: #ecf0f1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .pdf-btn {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .pdf-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .viewer-container {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 400px;
+            overflow: auto;
+            background-color: #525659;
+        }
+        
+        #pdfCanvas {
+            display: block;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .controls {
+            padding: 10px;
+            background-color: #ecf0f1;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .zoom-btn {
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .zoom-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .zoom-level {
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .page-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .viewer-container {
+                height: 60vh;
+            }
+            
+            .pdf-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .pdf-btn {
+                width: 100%;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>
-      <a href="index.html" class="navbar-brand"
-        ><img src="PHOTOS/main.logo.png" alt="" width="30" />LearnFo</a
-      >
-    </h1>
-  </header>
-
-  <iframe src="FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdf" frameborder="0"></iframe>
-  <div class="pdf-nav">
-    <a href="#" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/bengali sem1 unit1 dsc.pdf" class="active">UNIT 1</a>
-    <a href="#" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdf">UNIT 2</a>
-    <a href="#" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit3.pdf">UNIT 3</a>
-    <a href="#" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/BENGALI DSC 101 UNIT 5.pdf">UNIT 5</a>
-  </div>
-
-  <div class="pdf-container">
-    <div class="pdf-viewer-container">
-      <iframe
-        id="pdfFrame"
-        class="pdf-viewer"
-        src=""
-        allowfullscreen
-      ></iframe>
+    <div class="container">
+        <div class="header">
+            <h1>Secure PDF Viewer</h1>
+            <p>Download options disabled</p>
+        </div>
+        <iframe src="FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdf" frameborder="0"></iframe>
+        <div class="pdf-selector">
+            <button class="pdf-btn" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdf">Document 1</button>
+            <button class="pdf-btn" data-pdf="document2.pdf">Document 2</button>
+            <button class="pdf-btn" data-pdf="document3.pdf">Document 3</button>
+            <button class="pdf-btn" data-pdf="document4.pdf">Document 4</button>
+            <button class="pdf-btn" data-pdf="document5.pdf">Document 5</button>
+        </div>
+        
+        <div class="viewer-container" id="viewerContainer">
+            <canvas id="pdfCanvas"></canvas>
+        </div>
+        
+        <div class="controls">
+            <div class="page-controls">
+                <button class="zoom-btn" id="prevPage">Previous</button>
+                <span id="pageNum">Page: 1</span>
+                <span id="pageCount">of 1</span>
+                <button class="zoom-btn" id="nextPage">Next</button>
+            </div>
+            <button class="zoom-btn" id="zoomOut">Zoom Out</button>
+            <span class="zoom-level" id="zoomLevel">100%</span>
+            <button class="zoom-btn" id="zoomIn">Zoom In</button>
+        </div>
     </div>
-  </div>
 
-   <iframe src="FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdf" frameborder="0"></iframe>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const pdfFrame = document.getElementById("pdfFrame");
-      const navLinks = document.querySelectorAll(".pdf-nav a");
-
-      function loadPdf(pdfUrl) {
-        pdfFrame.src = `${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`;
-      }
-
-      // Load default
-      const defaultPdf = document.querySelector(".pdf-nav a.active").getAttribute("data-pdf");
-      loadPdf(defaultPdf);
-
-      navLinks.forEach((link) => {
-        link.addEventListener("click", function (e) {
-          e.preventDefault();
-          navLinks.forEach((l) => l.classList.remove("active"));
-          this.classList.add("active");
-
-          const pdfUrl = this.getAttribute("data-pdf");
-          loadPdf(pdfUrl);
+    <!-- Include PDF.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.min.js"></script>
+    <script>
+        // Set worker path for PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.worker.min.js';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const pdfCanvas = document.getElementById('pdfCanvas');
+            const ctx = pdfCanvas.getContext('2d');
+            const viewerContainer = document.getElementById('viewerContainer');
+            const zoomInBtn = document.getElementById('zoomIn');
+            const zoomOutBtn = document.getElementById('zoomOut');
+            const zoomLevel = document.getElementById('zoomLevel');
+            const pdfButtons = document.querySelectorAll('.pdf-btn');
+            const prevPageBtn = document.getElementById('prevPage');
+            const nextPageBtn = document.getElementById('nextPage');
+            const pageNum = document.getElementById('pageNum');
+            const pageCount = document.getElementById('pageCount');
+            
+            let pdfDoc = null;
+            let pageNumCurrent = 1;
+            let pageNumCount = 0;
+            let currentZoom = 1.0;
+            let currentPdf = '';
+            
+            // Function to render PDF page
+            function renderPage(num) {
+                pdfDoc.getPage(num).then(function(page) {
+                    const viewport = page.getViewport({ scale: currentZoom });
+                    pdfCanvas.height = viewport.height;
+                    pdfCanvas.width = viewport.width;
+                    
+                    // Center the canvas in the container
+                    pdfCanvas.style.marginLeft = `${(viewerContainer.clientWidth - viewport.width) / 2}px`;
+                    
+                    const renderContext = {
+                        canvasContext: ctx,
+                        viewport: viewport
+                    };
+                    
+                    page.render(renderContext);
+                    pageNum.textContent = `Page: ${num}`;
+                });
+            }
+            
+            // Function to load PDF
+            function loadPdf(pdfUrl) {
+                currentPdf = pdfUrl;
+                
+                // Disable buttons during loading
+                pdfButtons.forEach(btn => btn.disabled = true);
+                
+                // Load the PDF
+                pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
+                    pdfDoc = pdf;
+                    pageNumCount = pdf.numPages;
+                    pageNumCurrent = 1;
+                    
+                    pageCount.textContent = `of ${pageNumCount}`;
+                    renderPage(pageNumCurrent);
+                    
+                    // Re-enable buttons
+                    pdfButtons.forEach(btn => btn.disabled = false);
+                }).catch(function(error) {
+                    console.error('Error loading PDF:', error);
+                    alert('Error loading PDF. Please try another file.');
+                    pdfButtons.forEach(btn => btn.disabled = false);
+                });
+            }
+            
+            // Event listeners for PDF buttons
+            pdfButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const pdfUrl = this.getAttribute('data-pdf');
+                    loadPdf(pdfUrl);
+                });
+            });
+            
+            // Zoom in button
+            zoomInBtn.addEventListener('click', function() {
+                if (currentZoom < 2.0) {
+                    currentZoom += 0.1;
+                    zoomLevel.textContent = `${Math.round(currentZoom * 100)}%`;
+                    if (pdfDoc) renderPage(pageNumCurrent);
+                }
+            });
+            
+            // Zoom out button
+            zoomOutBtn.addEventListener('click', function() {
+                if (currentZoom > 0.5) {
+                    currentZoom -= 0.1;
+                    zoomLevel.textContent = `${Math.round(currentZoom * 100)}%`;
+                    if (pdfDoc) renderPage(pageNumCurrent);
+                }
+            });
+            
+            // Previous page button
+            prevPageBtn.addEventListener('click', function() {
+                if (pdfDoc && pageNumCurrent > 1) {
+                    pageNumCurrent--;
+                    renderPage(pageNumCurrent);
+                }
+            });
+            
+            // Next page button
+            nextPageBtn.addEventListener('click', function() {
+                if (pdfDoc && pageNumCurrent < pageNumCount) {
+                    pageNumCurrent++;
+                    renderPage(pageNumCurrent);
+                }
+            });
+            
+            // Disable right-click to prevent download
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+            
+            // Disable keyboard shortcuts that might save the PDF
+            document.addEventListener('keydown', function(e) {
+                // Disable Ctrl+S, Ctrl+P, etc.
+                if ((e.ctrlKey || e.metaKey) && 
+                    (e.key === 's' || e.key === 'p' || e.key === 'S' || e.key === 'P')) {
+                    e.preventDefault();
+                }
+            });
+            
+            // Load the first PDF by default
+            if (pdfButtons.length > 0) {
+                const firstPdf = pdfButtons[0].getAttribute('data-pdf');
+                loadPdf(firstPdf);
+            }
         });
-      });
-    });
-  </script>
+    </script>
 </body>
 </html>
