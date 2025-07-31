@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure PDF Viewer</title>
+    <title>PDF Viewer</title>
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
         
         body {
@@ -17,282 +17,104 @@
             padding: 20px;
         }
         
-        .container {
+        .pdf-viewer-container {
             max-width: 1200px;
             margin: 0 auto;
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
         
-        .header {
+        .pdf-header {
             background-color: #2c3e50;
             color: white;
             padding: 15px 20px;
-            text-align: center;
-        }
-        
-        .pdf-selector {
-            padding: 15px;
-            background-color: #ecf0f1;
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
-        
-        .pdf-btn {
-            padding: 10px 15px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .pdf-btn:hover {
-            background-color: #2980b9;
-        }
-        
-        .viewer-container {
-            position: relative;
-            width: 100%;
-            height: 70vh;
-            min-height: 400px;
-            overflow: auto;
-            background-color: #525659;
-        }
-        
-        #pdfCanvas {
-            display: block;
-            margin: 0 auto;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        }
-        
-        .controls {
-            padding: 10px;
-            background-color: #ecf0f1;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .zoom-btn {
-            padding: 8px 15px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .zoom-btn:hover {
-            background-color: #2980b9;
-        }
-        
-        .zoom-level {
-            padding: 8px 15px;
-            display: flex;
+            justify-content: space-between;
             align-items: center;
+        }
+        
+        .pdf-title {
+            font-size: 1.2rem;
             font-weight: bold;
         }
         
-        .page-controls {
+        .pdf-controls {
             display: flex;
-            align-items: center;
             gap: 10px;
         }
         
+        .pdf-controls button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .pdf-controls button:hover {
+            background-color: #2980b9;
+        }
+        
+        .pdf-viewer {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        
+        .pdf-footer {
+            background-color: #ecf0f1;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
         @media (max-width: 768px) {
-            .viewer-container {
-                height: 60vh;
+            .pdf-viewer {
+                height: 400px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .pdf-viewer {
+                height: 300px;
             }
             
-            .pdf-selector {
+            .pdf-header {
                 flex-direction: column;
-                align-items: center;
-            }
-            
-            .pdf-btn {
-                width: 100%;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: center;
+                gap: 10px;
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Secure PDF Viewer</h1>
-            <p>Download options disabled</p>
-        </div>
-        <div class="pdf-selector">
-            <button class="pdf-btn" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdf">Document 1</button>
-            <button class="pdf-btn" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/bengali sem1 unit1 dsc.pdf">Document 2</button>
-            <button class="pdf-btn" data-pdf="document3.pdf">Document 3</button>
-            <button class="pdf-btn" data-pdf="document4.pdf">Document 4</button>
-            <button class="pdf-btn" data-pdf="document5.pdf">Document 5</button>
-        </div>
-        
-        <div class="viewer-container" id="viewerContainer">
-            <canvas id="pdfCanvas"></canvas>
-        </div>
-        
-        <div class="controls">
-            <div class="page-controls">
-                <button class="zoom-btn" id="prevPage">Previous</button>
-                <span id="pageNum">Page: 1</span>
-                <span id="pageCount">of 1</span>
-                <button class="zoom-btn" id="nextPage">Next</button>
+    <div class="pdf-viewer-container">
+        <div class="pdf-header">
+            <div class="pdf-title">Document Viewer</div>
+            <div class="pdf-controls">
+                <button id="zoom-in">Zoom In</button>
+                <button id="zoom-out">Zoom Out</button>
+                <button id="download-btn">Download</button>
             </div>
-            <button class="zoom-btn" id="zoomOut">Zoom Out</button>
-            <span class="zoom-level" id="zoomLevel">100%</span>
-            <button class="zoom-btn" id="zoomIn">Zoom In</button>
+        </div>
+        
+        <iframe 
+            class="pdf-viewer" 
+            src="FYUG answer and solutions/bengali sem3/DSC 201/bengali ch 4 sem 3 dsc 201.pdf" 
+            frameborder="0"
+            allowfullscreen>
+        </iframe>
+        
+        <div class="pdf-footer">
+            PDF Viewer - Use controls to adjust viewing options
         </div>
     </div>
 
-    <!-- Include PDF.js library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.min.js"></script>
-    <script>
-        // Set worker path for PDF.js
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.worker.min.js';
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const pdfCanvas = document.getElementById('pdfCanvas');
-            const ctx = pdfCanvas.getContext('2d');
-            const viewerContainer = document.getElementById('viewerContainer');
-            const zoomInBtn = document.getElementById('zoomIn');
-            const zoomOutBtn = document.getElementById('zoomOut');
-            const zoomLevel = document.getElementById('zoomLevel');
-            const pdfButtons = document.querySelectorAll('.pdf-btn');
-            const prevPageBtn = document.getElementById('prevPage');
-            const nextPageBtn = document.getElementById('nextPage');
-            const pageNum = document.getElementById('pageNum');
-            const pageCount = document.getElementById('pageCount');
-            
-            let pdfDoc = null;
-            let pageNumCurrent = 1;
-            let pageNumCount = 0;
-            let currentZoom = 1.0;
-            let currentPdf = '';
-            
-            // Function to render PDF page
-            function renderPage(num) {
-                pdfDoc.getPage(num).then(function(page) {
-                    const viewport = page.getViewport({ scale: currentZoom });
-                    pdfCanvas.height = viewport.height;
-                    pdfCanvas.width = viewport.width;
-                    
-                    // Center the canvas in the container
-                    pdfCanvas.style.marginLeft = `${(viewerContainer.clientWidth - viewport.width) / 2}px`;
-                    
-                    const renderContext = {
-                        canvasContext: ctx,
-                        viewport: viewport
-                    };
-                    
-                    page.render(renderContext);
-                    pageNum.textContent = `Page: ${num}`;
-                });
-            }
-            
-            // Function to load PDF
-            function loadPdf(pdfUrl) {
-                currentPdf = pdfUrl;
-                
-                // Disable buttons during loading
-                pdfButtons.forEach(btn => btn.disabled = true);
-                
-                // Load the PDF
-                pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
-                    pdfDoc = pdf;
-                    pageNumCount = pdf.numPages;
-                    pageNumCurrent = 1;
-                    
-                    pageCount.textContent = `of ${pageNumCount}`;
-                    renderPage(pageNumCurrent);
-                    
-                    // Re-enable buttons
-                    pdfButtons.forEach(btn => btn.disabled = false);
-                }).catch(function(error) {
-                    console.error('Error loading PDF:', error);
-                    alert('Error loading PDF. Please try another file.');
-                    pdfButtons.forEach(btn => btn.disabled = false);
-                });
-            }
-            
-            // Event listeners for PDF buttons
-            pdfButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const pdfUrl = this.getAttribute('data-pdf');
-                    loadPdf(pdfUrl);
-                });
-            });
-            
-            // Zoom in button
-            zoomInBtn.addEventListener('click', function() {
-                if (currentZoom < 2.0) {
-                    currentZoom += 0.1;
-                    zoomLevel.textContent = `${Math.round(currentZoom * 100)}%`;
-                    if (pdfDoc) renderPage(pageNumCurrent);
-                }
-            });
-            
-            // Zoom out button
-            zoomOutBtn.addEventListener('click', function() {
-                if (currentZoom > 0.5) {
-                    currentZoom -= 0.1;
-                    zoomLevel.textContent = `${Math.round(currentZoom * 100)}%`;
-                    if (pdfDoc) renderPage(pageNumCurrent);
-                }
-            });
-            
-            // Previous page button
-            prevPageBtn.addEventListener('click', function() {
-                if (pdfDoc && pageNumCurrent > 1) {
-                    pageNumCurrent--;
-                    renderPage(pageNumCurrent);
-                }
-            });
-            
-            // Next page button
-            nextPageBtn.addEventListener('click', function() {
-                if (pdfDoc && pageNumCurrent < pageNumCount) {
-                    pageNumCurrent++;
-                    renderPage(pageNumCurrent);
-                }
-            });
-            
-            // Disable right-click to prevent download
-            document.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                return false;
-            });
-            
-            // Disable keyboard shortcuts that might save the PDF
-            document.addEventListener('keydown', function(e) {
-                // Disable Ctrl+S, Ctrl+P, etc.
-                if ((e.ctrlKey || e.metaKey) && 
-                    (e.key === 's' || e.key === 'p' || e.key === 'S' || e.key === 'P')) {
-                    e.preventDefault();
-                }
-            });
-            
-            // Load the first PDF by default
-            if (pdfButtons.length > 0) {
-                const firstPdf = pdfButtons[0].getAttribute('data-pdf');
-                loadPdf(firstPdf);
-            }
-        });
-    </script>
+   
 </body>
 </html>
