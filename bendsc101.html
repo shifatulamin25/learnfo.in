@@ -25,6 +25,7 @@
             color: white;
             padding: 1rem;
             text-align: center;
+            flex-shrink: 0;
         }
 
         .navbar-brand {
@@ -38,36 +39,57 @@
             font-style: italic;
         }
 
+        .pdf-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0.5rem;
+            background-color: #f0f0f0;
+            flex-shrink: 0;
+        }
         
-       .pdf-container {
+        .pdf-nav a {
+            padding: 0.5rem 1rem;
+            margin: 0.2rem;
+            background-color: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .pdf-nav a:hover, .pdf-nav a.active {
+            background-color: #4CAF50;
+        }
+        
+        .pdf-container {
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 1rem;
             background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin: 1rem;
-            border-radius: 5px;
-            height: 75vh; /* Primary height control */
-            min-height: 600px; /* Minimum height for smaller screens */
+            overflow: hidden;
+        }
+
+        .pdf-viewer-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
         }
 
         .pdf-viewer {
-            flex: 1;
-            border: 1px solid #ddd;
-            margin-bottom: 1rem;
-            overflow: auto;
-            position: relative;
-            height: calc(100% - 60px); /* Accounts for control bar height */
+            width: 100%;
+            height: 100%;
+            border: none;
         }
-
+        
         .pdf-controls {
             display: flex;
             justify-content: center;
             gap: 1rem;
             padding: 0.5rem;
             background-color: #f0f0f0;
-            border-radius: 5px;
+            flex-shrink: 0;
         }
         
         button {
@@ -84,72 +106,27 @@
             background-color: #45a049;
         }
         
-        .pdf-nav {
-            display: flex;
-            justify-content: center;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-        
-        .pdf-nav a {
-            padding: 0.5rem 1rem;
-            margin: 0 0.5rem;
-            background-color: #333;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        
-        .pdf-nav a:hover, .pdf-nav a.active {
-            background-color: #4CAF50;
-        }
-        
         @media (max-width: 768px) {
-            .pdf-container {
-                height: 70vh;
-                min-height: 400px;
-                margin: 0.5rem;
-                padding: 0.5rem;
-            }
-            
-            .pdf-controls {
-                flex-wrap: wrap;
+            .pdf-nav a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
             }
             
             button {
-                padding: 0.3rem 0.6rem;
-                font-size: 0.9rem;
-            }
-            
-            .pdf-nav a {
-                padding: 0.3rem 0.6rem;
-                margin: 0.2rem;
+                padding: 0.4rem 0.8rem;
                 font-size: 0.9rem;
             }
         }
         
         @media (max-width: 480px) {
-            .pdf-container {
-                height: 65vh;
-                min-height: 300px;
-                margin: 0.5rem;
-                padding: 0.5rem;
+            .pdf-nav a {
+                padding: 0.3rem 0.6rem;
+                margin: 0.1rem;
+                font-size: 0.7rem;
             }
             
             .pdf-controls {
                 display: none; /* Hide controls on small devices */
-            }
-            
-            .pdf-viewer {
-                height: 100%; /* Take full height when controls are hidden */
-                margin-bottom: 0;
-            }
-            
-            .pdf-nav a {
-                padding: 0.2rem 0.4rem;
-                margin: 0.1rem;
-                font-size: 0.8rem;
             }
         }
     </style>
@@ -166,10 +143,9 @@
         <a href="#" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/BENGALI DSC 101 UNIT 5.pdf">UNIT 5</a>
     </div>
 
-    
     <div class="pdf-container">
-        <div class="pdf-viewer">
-            <iframe id="pdfFrame" src="" width="100%" height="100%" style="border: none;"></iframe>
+        <div class="pdf-viewer-container">
+            <iframe id="pdfFrame" class="pdf-viewer" src=""></iframe>
         </div>
         
         <div class="pdf-controls">
@@ -177,7 +153,6 @@
             <button id="zoomOut">Zoom Out (-)</button>
         </div>
     </div>
-    
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -185,8 +160,6 @@
             const pdfFrame = document.getElementById('pdfFrame');
             const zoomInBtn = document.getElementById('zoomIn');
             const zoomOutBtn = document.getElementById('zoomOut');
-            const fitWidthBtn = document.getElementById('fitWidth');
-            const fitPageBtn = document.getElementById('fitPage');
             const navLinks = document.querySelectorAll('.pdf-nav a');
             
             // Initial zoom level
@@ -242,7 +215,7 @@
                 
                 // Load new PDF after a small delay to allow iframe to reset
                 setTimeout(() => {
-                    pdfFrame.src = `${pdfUrl}#toolbar=0&navpanes=0`;
+                    pdfFrame.src = `${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`;
                     zoomLevel = 1;
                 }, 100);
             }
@@ -257,6 +230,15 @@
             
             // Initialize
             updateZoom();
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                // Reset zoom on orientation change for mobile devices
+                if (window.innerWidth <= 480) {
+                    zoomLevel = 1;
+                    updateZoom();
+                }
+            });
         });
     </script>
 </body>
