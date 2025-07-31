@@ -3,241 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learnfo.in</title>
-    <link rel="icon" href="PHOTOS/main.logo.png" type="image/x-icon">
+    <title>PDF Viewer</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-        }
-        
-        body {
             font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+        }
+
+        body {
+            padding: 20px;
             background-color: #f5f5f5;
         }
-        
-        header {
-            background-color: #141313;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            flex-shrink: 0;
-        }
 
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-style: italic;
-        }
-
-        .pdf-nav {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            padding: 0.5rem;
-            background-color: #f0f0f0;
-            flex-shrink: 0;
-        }
-        
-        .pdf-nav a {
-            padding: 0.5rem 1rem;
-            margin: 0.2rem;
-            background-color: #333;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-            font-size: 0.9rem;
-        }
-        
-        .pdf-nav a:hover, .pdf-nav a.active {
-            background-color: #4CAF50;
-        }
-        
-        .pdf-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
-        .pdf-viewer-container {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
         }
 
-        .pdf-viewer {
-            width: 100%;
-            height: 100%;
-            border: none;
+        .pdf-selector {
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-bottom: 1px solid #ddd;
         }
-        
-        .pdf-controls {
+
+        .pdf-buttons {
             display: flex;
-            justify-content: center;
-            gap: 1rem;
-            padding: 0.5rem;
-            background-color: #f0f0f0;
-            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
         }
-        
-        button {
-            padding: 0.5rem 1rem;
-            background-color: #4CAF50;
+
+        .pdf-btn {
+            padding: 8px 15px;
+            background-color: #3498db;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 1rem;
+            transition: background-color 0.3s;
         }
-        
-        button:hover {
-            background-color: #45a049;
+
+        .pdf-btn:hover {
+            background-color: #2980b9;
         }
-        
+
+        .pdf-viewer-container {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            overflow: auto;
+            border: 1px solid #ddd;
+        }
+
+        .pdf-controls {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-bottom: 1px solid #ddd;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .control-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .zoom-display {
+            padding: 8px 15px;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 4px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .pdf-embed {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .no-pdf {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+
         @media (max-width: 768px) {
-            .pdf-nav a {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
+            .pdf-viewer-container {
+                height: 60vh;
             }
             
-            button {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.9rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .pdf-nav a {
-                padding: 0.3rem 0.6rem;
-                margin: 0.1rem;
-                font-size: 0.7rem;
+            .pdf-buttons {
+                justify-content: center;
             }
             
             .pdf-controls {
-                display: none; /* Hide controls on small devices */
+                flex-wrap: wrap;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1> <a href="index.html" class="navbar-brand"><img src="PHOTOS/main.logo.png" alt="" width="30">LearnFo</a></h1>
-    </header>
-    <div class="pdf-nav">
-        <a href="" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/bengali sem1 unit1 dsc.pdf" class="active">UNIT 1</a>
-        <a href="" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdf">UNIT 2</a>
-        <a href="" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit3.pdf">UNIT 3</a>
-        <!--<a href="" data-pdf="pdf4.pdf">UNIT 4</a>-->
-        <a href="#" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/BENGALI DSC 101 UNIT 5.pdf">UNIT 5</a>
-    </div>
-
-    <div class="pdf-container">
-        <div class="pdf-viewer-container">
-            <iframe id="pdfFrame" class="pdf-viewer" src=""></iframe>
+    <div class="container">
+        <div class="header">
+            <h1>PDF Viewer</h1>
+        </div>
+       
+        <div class="pdf-selector">
+            <h2>Select a PDF</h2>
+            <div class="pdf-buttons">
+                <button class="pdf-btn" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdf">Sample PDF 1</button>
+                <button class="pdf-btn" data-pdf="sample2.pdf">Sample PDF 2</button>
+                <button class="pdf-btn" data-pdf="sample3.pdf">Sample PDF 3</button>
+                <button class="pdf-btn" data-pdf="sample4.pdf">Sample PDF 4</button>
+                <button class="pdf-btn" data-pdf="sample5.pdf">Sample PDF 5</button>
+            </div>
         </div>
         
         <div class="pdf-controls">
-            <button id="zoomIn">Zoom In (+)</button>
-            <button id="zoomOut">Zoom Out (-)</button>
+            <button class="control-btn" id="zoom-in">Zoom In (+)</button>
+            <button class="control-btn" id="zoom-out">Zoom Out (-)</button>
+            <button class="control-btn" id="fit-width">Fit Width</button>
+            <button class="control-btn" id="fit-page">Fit Page</button>
+            <div class="zoom-display" id="zoom-level">100%</div>
+        </div>
+        
+        <div class="pdf-viewer-container">
+            <div class="no-pdf">Please select a PDF to view</div>
+            <iframe class="pdf-embed" id="pdf-viewer" style="display: none;"></iframe>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // PDF viewer elements
-            const pdfFrame = document.getElementById('pdfFrame');
-            const zoomInBtn = document.getElementById('zoomIn');
-            const zoomOutBtn = document.getElementById('zoomOut');
-            const navLinks = document.querySelectorAll('.pdf-nav a');
+            const pdfViewer = document.getElementById('pdf-viewer');
+            const zoomLevelDisplay = document.getElementById('zoom-level');
+            const noPdfMessage = document.querySelector('.no-pdf');
+            let currentZoom = 100;
+            let currentPdf = '';
             
-            // Initial zoom level
-            let zoomLevel = 1;
-            const zoomStep = 0.1;
-            const minZoom = 0.5;
-            const maxZoom = 3;
-            
-            // Load the first PDF by default
-            const defaultPdf = document.querySelector('.pdf-nav a.active').getAttribute('data-pdf');
-            loadPdf(defaultPdf);
-            
-            // Navigation click handler
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // Remove active class from all links
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    
-                    // Add active class to clicked link
-                    this.classList.add('active');
-                    
-                    // Load the selected PDF
-                    const pdfUrl = this.getAttribute('data-pdf');
-                    loadPdf(pdfUrl);
+            // PDF buttons
+            const pdfButtons = document.querySelectorAll('.pdf-btn');
+            pdfButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const pdfFile = this.getAttribute('data-pdf');
+                    loadPdf(pdfFile);
                 });
             });
             
-            // Only add zoom functionality if buttons exist (for mobile they'll be hidden)
-            if (zoomInBtn && zoomOutBtn) {
-                // Zoom in button
-                zoomInBtn.addEventListener('click', function() {
-                    if (zoomLevel < maxZoom) {
-                        zoomLevel += zoomStep;
-                        updateZoom();
-                    }
-                });
-                
-                // Zoom out button
-                zoomOutBtn.addEventListener('click', function() {
-                    if (zoomLevel > minZoom) {
-                        zoomLevel -= zoomStep;
-                        updateZoom();
-                    }
-                });
-            }
+            // Zoom controls
+            document.getElementById('zoom-in').addEventListener('click', function() {
+                currentZoom += 10;
+                updateZoom();
+            });
             
-            // Function to load PDF
-            function loadPdf(pdfUrl) {
-                // Clear previous PDF
-                pdfFrame.src = '';
-                
-                // Load new PDF after a small delay to allow iframe to reset
-                setTimeout(() => {
-                    pdfFrame.src = `${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`;
-                    zoomLevel = 1;
-                }, 100);
-            }
-            
-            // Function to update zoom level
-            function updateZoom() {
-                pdfFrame.style.transform = `scale(${zoomLevel})`;
-                pdfFrame.style.transformOrigin = '0 0';
-                pdfFrame.style.width = `${100 / zoomLevel}%`;
-                pdfFrame.style.height = `${100 / zoomLevel}%`;
-            }
-            
-            // Initialize
-            updateZoom();
-            
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                // Reset zoom on orientation change for mobile devices
-                if (window.innerWidth <= 480) {
-                    zoomLevel = 1;
+            document.getElementById('zoom-out').addEventListener('click', function() {
+                if (currentZoom > 30) {
+                    currentZoom -= 10;
                     updateZoom();
                 }
+            });
+            
+            document.getElementById('fit-width').addEventListener('click', function() {
+                currentZoom = 'fit-width';
+                updateZoom();
+            });
+            
+            document.getElementById('fit-page').addEventListener('click', function() {
+                currentZoom = 'fit-page';
+                updateZoom();
+            });
+            
+            function loadPdf(pdfFile) {
+                currentPdf = pdfFile;
+                noPdfMessage.style.display = 'none';
+                pdfViewer.style.display = 'block';
+                
+                // Reset zoom to default when loading new PDF
+                currentZoom = 100;
+                updateZoom();
+                
+                // Load the PDF with #toolbar=0 to hide download buttons
+                pdfViewer.src = pdfFile + '#toolbar=0&navpanes=0';
+            }
+            
+            function updateZoom() {
+                if (currentZoom === 'fit-width') {
+                    pdfViewer.style.width = '100%';
+                    pdfViewer.style.height = '100%';
+                    pdfViewer.style.transform = 'none';
+                    zoomLevelDisplay.textContent = 'Fit Width';
+                } else if (currentZoom === 'fit-page') {
+                    pdfViewer.style.width = '100%';
+                    pdfViewer.style.height = '100%';
+                    pdfViewer.style.transform = 'none';
+                    zoomLevelDisplay.textContent = 'Fit Page';
+                } else {
+                    pdfViewer.style.width = currentZoom + '%';
+                    pdfViewer.style.height = '100%';
+                    pdfViewer.style.transform = 'none';
+                    zoomLevelDisplay.textContent = currentZoom + '%';
+                }
+            }
+            
+            // Prevent context menu on the PDF viewer to disable download options
+            pdfViewer.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
             });
         });
     </script>
