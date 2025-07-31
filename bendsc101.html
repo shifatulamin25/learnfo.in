@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learnfo.in</title>
+    <link rel="icon" href="PHOTOS/main.logo.png" type="image/x-icon">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #141313;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-style: italic;
+        }
+
+        
+       .pdf-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 1rem;
+            border-radius: 5px;
+            height: 75vh; /* Primary height control */
+            min-height: 600px; /* Minimum height for smaller screens */
+        }
+
+        .pdf-viewer {
+            flex: 1;
+            border: 1px solid #ddd;
+            margin-bottom: 1rem;
+            overflow: auto;
+            position: relative;
+            height: calc(100% - 60px); /* Accounts for control bar height */
+        }
+
+/* Adjust media queries accordingly */
+@media (max-width: 768px) {
+        .pdf-container {
+        height: 70vh;
+        min-height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pdf-container {
+        height: 65vh;
+        min-height: 300px;
+        margin: 0.5rem;
+    }
+}
+        
+        .pdf-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0.5rem;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        
+        button {
+            padding: 0.5rem 1rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .pdf-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .pdf-nav a {
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            background-color: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .pdf-nav a:hover, .pdf-nav a.active {
+            background-color: #4CAF50;
+        }
+        
+        @media (max-width: 768px) {
+            .pdf-container {
+                margin: 0.5rem;
+                padding: 0.5rem;
+            }
+            
+            .pdf-controls {
+                flex-wrap: wrap;
+            }
+            
+            button {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.9rem;
+            }
+            
+            .pdf-nav a {
+                padding: 0.3rem 0.6rem;
+                margin: 0.2rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .pdf-controls {
+                gap: 0.5rem;
+            }
+            
+            button {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1> <a href="index.html" class="navbar-brand"><img src="PHOTOS/main.logo.png" alt="" width="30">LearnFo</a></h1>
+    </header>
+    <div class="pdf-nav">
+        <a href="" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/bengali sem1 unit1 dsc.pdf" class="active">UNIT 1</a>
+        <a href="" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdf">UNIT 2</a>
+        <a href="" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit3.pdf">UNIT 3</a>
+        <!--<a href="" data-pdf="pdf4.pdf">UNIT 4</a>-->
+        <a href="#" data-pdf="FYUG answer and solutions/bengali sem 1/DSC 101/BENGALI DSC 101 UNIT 5.pdf">UNIT 5</a>
+    </div>
+
+    
+    <div class="pdf-container">
+        <div class="pdf-viewer">
+            <iframe id="pdfFrame" src="" width="100%" height="100%" style="border: none;"></iframe>
+        </div>
+        
+        <div class="pdf-controls">
+            <button id="zoomIn">Zoom In (+)</button>
+            <button id="zoomOut">Zoom Out (-)</button>
+        </div>
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // PDF viewer elements
+            const pdfFrame = document.getElementById('pdfFrame');
+            const zoomInBtn = document.getElementById('zoomIn');
+            const zoomOutBtn = document.getElementById('zoomOut');
+            const fitWidthBtn = document.getElementById('fitWidth');
+            const fitPageBtn = document.getElementById('fitPage');
+            const navLinks = document.querySelectorAll('.pdf-nav a');
+            
+            // Initial zoom level
+            let zoomLevel = 1;
+            const zoomStep = 0.1;
+            const minZoom = 0.5;
+            const maxZoom = 3;
+            
+            // Load the first PDF by default
+            const defaultPdf = document.querySelector('.pdf-nav a.active').getAttribute('data-pdf');
+            loadPdf(defaultPdf);
+            
+            // Navigation click handler
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Load the selected PDF
+                    const pdfUrl = this.getAttribute('data-pdf');
+                    loadPdf(pdfUrl);
+                });
+            });
+            
+            // Zoom in button
+            zoomInBtn.addEventListener('click', function() {
+                if (zoomLevel < maxZoom) {
+                    zoomLevel += zoomStep;
+                    updateZoom();
+                }
+            });
+            
+            // Zoom out button
+            zoomOutBtn.addEventListener('click', function() {
+                if (zoomLevel > minZoom) {
+                    zoomLevel -= zoomStep;
+                    updateZoom();
+                }
+            });
+            
+            // Fit width button
+            fitWidthBtn.addEventListener('click', function() {
+                pdfFrame.style.width = '100%';
+                pdfFrame.style.height = '100%';
+                zoomLevel = 1;
+            });
+            
+            // Fit page button
+            fitPageBtn.addEventListener('click', function() {
+                pdfFrame.style.width = '100%';
+                pdfFrame.style.height = '100%';
+                zoomLevel = 1;
+            });
+            
+            // Function to load PDF
+            function loadPdf(pdfUrl) {
+                
+                // Clear previous PDF
+                pdfFrame.src = '';
+                
+                // Load new PDF after a small delay to allow iframe to reset
+                setTimeout(() => {
+                    pdfFrame.src = `${pdfUrl}#toolbar=0&navpanes=0`;
+                    zoomLevel = 1;
+                }, 100);
+            }
+            
+            // Function to update zoom level
+            function updateZoom() {
+                pdfFrame.style.transform = `scale(${zoomLevel})`;
+                pdfFrame.style.transformOrigin = '0 0';
+                pdfFrame.style.width = `${100 / zoomLevel}%`;
+                pdfFrame.style.height = `${100 / zoomLevel}%`;
+            }
+            
+            // Initialize
+            updateZoom();
+        });
+    </script>
+</body>
+</html>
