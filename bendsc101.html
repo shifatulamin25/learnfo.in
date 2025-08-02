@@ -14,11 +14,18 @@
 }
 
 h2 {
-  background: #3730a3;
+  background: #070710;
   color: white;
   padding: 1rem;
   margin: 0;
 }
+
+.instruction {
+  font-size: 1.1rem;
+  margin: 10px 0;
+  color: #333;
+}
+
 
 .button-container {
   margin: 20px 10px;
@@ -55,22 +62,37 @@ iframe {
   border: none;
 }
 
+.footer {
+  background-color: #e2e8f0;
+  padding: 15px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #444;
+  border-top: 1px solid #ccc;
+  margin-top: 20px;
+}
+
+
   </style>
 </head>
 <body>
-  <h2>PDF Viewer - Learnfo</h2>
-  
+  <h2><img src="PHOTOS/main.logo.png" alt="" width="30">Learnfo</h2>
+  <p class="instruction">📄 Please select unit:</p>
   <div class="button-container">
-    <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdf')">Open PDF 1</button>
-    <button onclick="loadPDF('pdfs/file2.pdf')">Open PDF 2</button>
-    <button onclick="loadPDF('pdfs/file3.pdf')">Open PDF 3</button>
-    <button onclick="loadPDF('pdfs/file4.pdf')">Open PDF 4</button>
-    <button onclick="loadPDF('pdfs/file5.pdf')">Open PDF 5</button>
+    <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/bengali sem1 unit1 dsc.pdf')">UNIT 1</button>
+    <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdfpdfs/file2.pdf')">UNIT 2</button>
+    <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit3.pdfpdfs/file3.pdf')">UNIT 3</button>
+    <!--<button onclick="loadPDF('.pdf')">UNIT 4</button>-->
+    <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/BENGALI DSC 101 UNIT 5.pdfpdfs/file5.pdf')">UNIT 5</button>
   </div>
 
   <div class="viewer-container">
     <iframe id="pdfFrame" src="" frameborder="0"></iframe>
   </div>
+
+   <footer class="footer">
+    <p>Disclaimer: All PDF materials are used for educational purposes only. If any copyrighted material is used, full credit is given to the original owners. If you are the rightful owner and want it removed, please contact us at lernfo25@gmail.com</p>
+  </footer>
 
   <script>
     function loadPDF(pdfPath) {
@@ -80,4 +102,5 @@ iframe {
   </script>
 </body>
 </html>
+
 
