@@ -18,11 +18,16 @@
       color: white;
       padding: 1rem;
       margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
     .sub {
       font-style: oblique;
       font-size: medium;
+      margin: 5px 0;
     }
 
     .instruction {
@@ -54,28 +59,25 @@
       background-color: #4338ca;
     }
 
+    .button-container button.active {
+      background-color: #312e81;
+    }
+
     .viewer-container {
-      width: 100%;
+      width: 95%;
       height: 80vh;
-      padding: 10px;
+      margin: 0 auto;
       position: relative;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: #f8f9fa;
     }
 
     iframe {
       width: 100%;
       height: 100%;
       border: none;
-      display: none;
-    }
-
-    .loading {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 1.2rem;
-      color: #4f46e5;
-      display: none;
     }
 
     .footer {
@@ -88,16 +90,52 @@
       margin-top: 20px;
     }
 
-    @media (max-width: 600px) {
-      .button-container {
-        flex-direction: column;
-        gap: 12px;
-      }
+    .loading {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(255, 255, 255, 0.8);
+      z-index: 10;
+    }
+
+    .spinner {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #4f46e5;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .no-pdf {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f8f9fa;
+      color: #666;
+      font-size: 1.2rem;
     }
   </style>
 </head>
 <body>
-  <h2><img src="PHOTOS/main.logo.png" alt="" width="30"> Learnfo</h2>
+  <h2><img src="PHOTOS/main.logo.png" alt="Learnfo Logo" width="30">Learnfo</h2>
   <p class="sub">BENGALI DSC 101 SEMESTER 1</p>
   <p class="instruction">📄 Please select unit:</p>
 
@@ -105,39 +143,72 @@
     <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/bengali sem1 unit1 dsc.pdf')">UNIT 1</button>
     <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdf')">UNIT 2</button>
     <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit3.pdf')">UNIT 3</button>
-    <!-- <button onclick="loadPDF('.pdf')">UNIT 4</button> -->
+    <!--<button onclick="loadPDF('.pdf')">UNIT 4</button>-->
     <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/BENGALI DSC 101 UNIT 5.pdf')">UNIT 5</button>
   </div>
 
   <div class="viewer-container">
-    <div class="loading" id="loading">🔄 Loading PDF...</div>
-    <iframe id="pdfFrame"></iframe>
+    <div class="no-pdf">Please select a unit to view PDF</div>
+    <div class="loading" style="display: none;">
+      <div class="spinner"></div>
+      <div>Loading PDF...</div>
+    </div>
+    <iframe id="pdfFrame" src="" frameborder="0"></iframe>
   </div>
 
   <footer class="footer">
-    <p>Disclaimer: All PDF materials are used for educational purposes only. If any copyrighted material is used, full credit is given to the original owners. If you are the rightful owner and want it removed, please contact us at learnfo25@gmail.com</p>
+    <p>Disclaimer: All PDF materials are used for educational purposes only. If any copyrighted material is used, full credit is given to the original owners. If you are the rightful owner and want it removed, please contact us at lernfo25@gmail.com</p>
   </footer>
 
   <script>
+    // Store the buttons for state management
+    const buttons = document.querySelectorAll('.button-container button');
+    let currentActiveButton = null;
+
     function loadPDF(pdfPath) {
-      const iframe = document.getElementById("pdfFrame");
-      const loading = document.getElementById("loading");
+      // Show loading screen
+      const loadingElement = document.querySelector('.loading');
+      const noPdfElement = document.querySelector('.no-pdf');
+      const pdfFrame = document.getElementById('pdfFrame');
+      
+      noPdfElement.style.display = 'none';
+      loadingElement.style.display = 'flex';
+      pdfFrame.style.display = 'none';
+      
+      // Update active button state
+      buttons.forEach(button => {
+        button.classList.remove('active');
+        if (button.textContent === event.target.textContent) {
+          button.classList.add('active');
+          currentActiveButton = button;
+        }
+      });
 
-      // Show loading message and hide iframe
-      loading.style.display = "block";
-      iframe.style.display = "none";
-
-      // Convert relative to full absolute URL
-      const fullURL = `${location.origin}/${pdfPath}`;
-
-      iframe.src = fullURL;
-
-      // On load, hide loading
-      iframe.onload = function () {
-        loading.style.display = "none";
-        iframe.style.display = "block";
+      // Use direct PDF embedding instead of Google Docs viewer
+      pdfFrame.src = pdfPath;
+      
+      // Hide loading screen when PDF is loaded
+      pdfFrame.onload = function() {
+        loadingElement.style.display = 'none';
+        pdfFrame.style.display = 'block';
+      };
+      
+      // Handle potential errors
+      pdfFrame.onerror = function() {
+        loadingElement.style.display = 'none';
+        noPdfElement.style.display = 'flex';
+        noPdfElement.textContent = 'Failed to load PDF. Please try again.';
+        if (currentActiveButton) {
+          currentActiveButton.classList.remove('active');
+        }
       };
     }
+
+    // Prevent right-click on iframe to disable Google Docs toolbar
+    document.getElementById('pdfFrame').addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
   </script>
 </body>
 </html>
+ 
