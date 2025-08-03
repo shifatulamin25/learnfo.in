@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Physics DSC 101 PDF Viewer</title>
+  <title>Responsive PDF Viewer</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,9 +11,6 @@
       margin: 0;
       padding: 0;
       text-align: center;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
 
     h2 {
@@ -30,7 +27,7 @@
     .sub {
       font-style: oblique;
       font-size: medium;
-      margin: 5px 0;
+      margin-top: 10px;
     }
 
     .instruction {
@@ -64,25 +61,22 @@
 
     .viewer-container {
       width: 100%;
-      flex: 1;
+      height: 80vh;
+      padding: 10px;
+      display: none;
       position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f8f9fa;
-      border: 1px dashed #ccc;
-      margin: 10px 0;
-      min-height: 60vh;
     }
 
     iframe {
       width: 100%;
       height: 100%;
       border: none;
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 0;
+    }
+
+    .placeholder-message, .loading-message {
+      font-size: 1rem;
+      color: #555;
+      margin-top: 20px;
     }
 
     .footer {
@@ -92,94 +86,35 @@
       font-size: 0.9rem;
       color: #444;
       border-top: 1px solid #ccc;
+      margin-top: 20px;
     }
 
-    .loading {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.9);
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-    }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(243, 243, 243, 0.3);
-      border-top: 4px solid #4f46e5;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      margin-bottom: 10px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .loading-text {
-      color: #4f46e5;
-      font-weight: bold;
-    }
-
-    .initial-message {
-      font-size: 1.5rem;
-      color: #666;
-      text-align: center;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      width: 100%;
-    }
-
-    .initial-message .icon {
-      font-size: 3rem;
-      margin-bottom: 20px;
-    }
-
-    .pdf-frame-container {
-      position: relative;
-      overflow: hidden;
-      height: 100%;
-      width: 100%;
+    @media (max-width: 600px) {
+      .button-container {
+        flex-direction: column;
+        align-items: center;
+      }
     }
   </style>
 </head>
 <body>
-  ody>
   <h2><img src="PHOTOS/main.logo.png" alt="" width="30">Learnfo</h2>
   <p class="sub">BENGALI DSC 101 SEMESTER 1</p>
+  <p class="instruction">📄 Please select unit:</p>
 
   <div class="button-container">
     <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/bengali sem1 unit1 dsc.pdf')">UNIT 1</button>
     <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdf')">UNIT 2</button>
     <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit3.pdf')">UNIT 3</button>
-    <!--<button onclick="loadPDF('.pdf')">UNIT 4</button>-->
+    <!-- <button onclick="loadPDF('.pdf')">UNIT 4</button> -->
     <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/BENGALI DSC 101 UNIT 5.pdf')">UNIT 5</button>
   </div>
 
+  <div class="placeholder-message" id="placeholder">👉 Please click one unit to view the PDF.</div>
+  <div class="loading-message" id="loading" style="display: none;">⏳ Loading PDF, please wait...</div>
 
-  <div class="viewer-container">
-    <div id="initialMessage" class="initial-message">
-      <div class="icon">📚</div>
-      <div>Please select a unit to view the PDF content</div>
-    </div>
-    <div id="loading" class="loading">
-      <div class="spinner"></div>
-      <div class="loading-text">Loading PDF...</div>
-    </div>
-    <div class="pdf-frame-container">
-      <iframe id="pdfFrame" src="" frameborder="0"></iframe>
-    </div>
+  <div class="viewer-container" id="viewer">
+    <iframe id="pdfFrame" src=""></iframe>
   </div>
 
   <footer class="footer">
@@ -187,89 +122,25 @@
   </footer>
 
   <script>
-    // Cache for loaded PDFs
-    const pdfCache = {};
-    let currentPdf = null;
+    function loadPDF(pdfPath) {
+      const frame = document.getElementById("pdfFrame");
+      const viewer = document.getElementById("viewer");
+      const loading = document.getElementById("loading");
+      const placeholder = document.getElementById("placeholder");
 
-    function loadPDF(pdfFilename) {
-      if (currentPdf === pdfFilename) return;
-      currentPdf = pdfFilename;
+      viewer.style.display = "none";
+      loading.style.display = "block";
+      placeholder.style.display = "none";
 
-      // Show loading state
-      document.getElementById('initialMessage').style.display = 'none';
-      document.getElementById('loading').style.display = 'flex';
-      document.getElementById('pdfFrame').style.display = 'none';
-      
-      // Check cache first
-      if (pdfCache[pdfFilename]) {
-        showPDF(pdfCache[pdfFilename]);
-        return;
-      }
+      const url = `${location.origin}/${pdfPath}`;
+      frame.src = url;
 
-      // Construct the correct PDF path
-      const pdfPath = `FYUG answer and solutions/bengali sem 1/DSC 101/${pdfFilename}`;
-      
-      // Construct viewer URL
-      const viewerURL = `https://docs.google.com/gview?url=${encodeURIComponent(window.location.origin + '/' + pdfPath)}&embedded=true`;
-      
-      // Store in cache
-      pdfCache[pdfFilename] = viewerURL;
-
-      // Load the PDF
-      showPDF(viewerURL);
+      frame.onload = () => {
+        loading.style.display = "none";
+        viewer.style.display = "block";
+      };
     }
-
-    function showPDF(url) {
-      const pdfFrame = document.getElementById('pdfFrame');
-      const loading = document.getElementById('loading');
-      
-      // Reset the iframe first
-      pdfFrame.src = '';
-      
-      // Load the new PDF after a short delay
-      setTimeout(() => {
-        pdfFrame.src = url;
-        
-        pdfFrame.onload = function() {
-          loading.style.display = 'none';
-          pdfFrame.style.display = 'block';
-          
-          try {
-            // Additional security measures
-            const iframeDoc = this.contentDocument || this.contentWindow.document;
-            iframeDoc.addEventListener('contextmenu', (e) => {
-              e.preventDefault();
-              return false;
-            });
-          } catch (e) {
-            console.log("Security restriction prevented context menu disable");
-          }
-        };
-
-        pdfFrame.onerror = function() {
-          loading.style.display = 'none';
-          document.getElementById('initialMessage').style.display = 'flex';
-          document.getElementById('initialMessage').innerHTML = `
-            <div class="icon">⚠️</div>
-            <div>Failed to load PDF. Please try again.</div>
-          `;
-        };
-      }, 100);
-    }
-
-    // Prevent right-click on the page
-    document.addEventListener('contextmenu', function(e) {
-      e.preventDefault();
-      return false;
-    });
-
-    // Prevent keyboard shortcuts that might open new windows
-    document.addEventListener('keydown', function(e) {
-      if (e.ctrlKey || e.metaKey) {
-        e.preventDefault();
-        return false;
-      }
-    });
   </script>
 </body>
 </html>
+
