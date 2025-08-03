@@ -6,102 +6,177 @@
   <title>Responsive PDF Viewer</title>
   <style>
     body {
-  font-family: Arial, sans-serif;
-  background: #f3f4f6;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-}
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
 
-h2 {
-  background: #070710;
-  color: white;
-  padding: 1rem;
-  margin: 0;
-}
+    h2 {
+      background: #070710;
+      color: white;
+      padding: 1rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
 
-.instruction {
-  font-size: 1.1rem;
-  margin: 10px 0;
-  color: #333;
-}
+    .sub {
+      font-style: oblique;
+      font-size: medium;
+    }
 
+    .instruction {
+      font-size: 1.1rem;
+      margin: 10px 0;
+      color: #333;
+    }
 
-.button-container {
-  margin: 20px 10px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-}
+    .button-container {
+      margin: 20px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
 
-.button-container button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  background: #4f46e5;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
+    .button-container button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
 
-.button-container button:hover {
-  background-color: #4338ca;
-}
+    .button-container button:hover {
+      background-color: #4338ca;
+    }
 
-.viewer-container {
-  width: 100%;
-  height: 80vh;
-  padding: 10px;
-}
+    .viewer-container {
+      width: 100%;
+      height: 80vh;
+      padding: 10px;
+      position: relative;
+    }
 
-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
 
-.footer {
-  background-color: #e2e8f0;
-  padding: 15px;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #444;
-  border-top: 1px solid #ccc;
-  margin-top: 20px;
-}
+    .footer {
+      background-color: #e2e8f0;
+      padding: 15px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #444;
+      border-top: 1px solid #ccc;
+      margin-top: 20px;
+    }
 
+    .loading {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
 
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #4f46e5;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: #4f46e5;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <h2><img src="PHOTOS/main.logo.png" alt="" width="30">Learnfo</h2>
+  <p class="sub">PHYSICS DSC 101 SEMESTER 1</p>
   <p class="instruction">📄 Please select unit:</p>
+  
   <div class="button-container">
-    <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/bengali sem1 unit1 dsc.pdf')">UNIT 1</button>
-    <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit 2.pdf')">UNIT 2</button>
-    <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/bengali dsc 101 unit3.pdf')">UNIT 3</button>
-    <!--<button onclick="loadPDF('.pdf')">UNIT 4</button>-->
-    <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/BENGALI DSC 101 UNIT 5.pdf')">UNIT 5</button>
+    <button onclick="loadPDF('FYUG answer and solutions/PHYSICS SEM 1/physics dsc 101 unit 1.pdf')">UNIT 1</button>
+    <button onclick="loadPDF('FYUG answer and solutions/PHYSICS SEM 1/physics dsc 101 unit 2.pdf')">UNIT 2</button>
+    <button onclick="loadPDF('FYUG answer and solutions/PHYSICS SEM 1/physics dsc 101 unit 3.pdf')">UNIT 3</button>
+    <button onclick="loadPDF('FYUG answer and solutions/PHYSICS SEM 1/unit-(iv) Orthogonal Curvillinear Coordinates notes.pdf')">UNIT 4</button>
+    <button onclick="loadPDF('FYUG answer and solutions/PHYSICS SEM 1/physics dsc 101 unit 5.pdf')">UNIT 5</button>
   </div>
 
   <div class="viewer-container">
+    <div id="loading" class="loading" style="display: none;">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading PDF...</div>
+    </div>
     <iframe id="pdfFrame" src="" frameborder="0"></iframe>
   </div>
 
-   <footer class="footer">
+  <footer class="footer">
     <p>Disclaimer: All PDF materials are used for educational purposes only. If any copyrighted material is used, full credit is given to the original owners. If you are the rightful owner and want it removed, please contact us at lernfo25@gmail.com</p>
   </footer>
 
   <script>
     function loadPDF(pdfPath) {
-  const viewerURL = `https://docs.google.com/gview?url=${location.origin}/${pdfPath}&embedded=true`;
-  document.getElementById("pdfFrame").src = viewerURL;
-}
+      // Show loading indicator
+      document.getElementById("loading").style.display = "flex";
+      
+      // Clear previous PDF
+      document.getElementById("pdfFrame").src = "";
+      
+      // Construct viewer URL
+      const viewerURL = `https://docs.google.com/gview?url=${encodeURIComponent(location.origin + '/' + pdfPath)}&embedded=true`;
+      
+      // Set the iframe source after a small delay to allow loading indicator to show
+      setTimeout(() => {
+        document.getElementById("pdfFrame").src = viewerURL;
+        
+        // Hide loading indicator when PDF is loaded
+        document.getElementById("pdfFrame").onload = function() {
+          document.getElementById("loading").style.display = "none";
+        };
+      }, 100);
+      
+      // Prevent right-click on iframe to disable Google's pop-out button
+      document.getElementById("pdfFrame").addEventListener('load', function() {
+        this.contentWindow.document.addEventListener('contextmenu', function(e) {
+          e.preventDefault();
+          return false;
+        }, false);
+      });
+    }
+    
+    // Prevent right-click on the page
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      return false;
+    });
   </script>
 </body>
 </html>
-
-
 
