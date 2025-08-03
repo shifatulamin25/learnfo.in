@@ -27,7 +27,6 @@
     .sub {
       font-style: oblique;
       font-size: medium;
-      margin: 5px 0;
     }
 
     .instruction {
@@ -59,25 +58,18 @@
       background-color: #4338ca;
     }
 
-    .button-container button.active {
-      background-color: #312e81;
-    }
-
     .viewer-container {
-      width: 95%;
+      width: 100%;
       height: 80vh;
-      margin: 0 auto;
+      padding: 10px;
       position: relative;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      overflow: hidden;
-      background-color: #f8f9fa;
     }
 
     iframe {
       width: 100%;
       height: 100%;
       border: none;
+      background: white;
     }
 
     .footer {
@@ -92,26 +84,21 @@
 
     .loading {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background-color: rgba(255, 255, 255, 0.8);
-      z-index: 10;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.2rem;
+      color: #555;
     }
 
     .spinner {
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #4f46e5;
+      border: 4px solid rgba(0, 0, 0, 0.1);
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
+      border-top: 4px solid #4f46e5;
+      width: 30px;
+      height: 30px;
       animation: spin 1s linear infinite;
-      margin-bottom: 15px;
+      margin: 0 auto 10px;
     }
 
     @keyframes spin {
@@ -119,23 +106,18 @@
       100% { transform: rotate(360deg); }
     }
 
-    .no-pdf {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #f8f9fa;
-      color: #666;
-      font-size: 1.2rem;
+    .error-message {
+      color: #dc2626;
+      padding: 20px;
+      background: #fee2e2;
+      border-radius: 8px;
+      margin: 20px auto;
+      max-width: 500px;
     }
   </style>
 </head>
 <body>
-  <h2><img src="PHOTOS/main.logo.png" alt="Learnfo Logo" width="30">Learnfo</h2>
+  <h2><img src="PHOTOS/main.logo.png" alt="" width="30">Learnfo</h2>
   <p class="sub">BENGALI DSC 101 SEMESTER 1</p>
   <p class="instruction">📄 Please select unit:</p>
 
@@ -148,11 +130,11 @@
   </div>
 
   <div class="viewer-container">
-    <div class="no-pdf">Please select a unit to view PDF</div>
-    <div class="loading" style="display: none;">
+    <div id="loadingIndicator" class="loading" style="display: none;">
       <div class="spinner"></div>
-      <div>Loading PDF...</div>
+      Loading PDF...
     </div>
+    <div id="errorDisplay" class="error-message" style="display: none;"></div>
     <iframe id="pdfFrame" src="" frameborder="0"></iframe>
   </div>
 
@@ -161,54 +143,44 @@
   </footer>
 
   <script>
-    // Store the buttons for state management
-    const buttons = document.querySelectorAll('.button-container button');
-    let currentActiveButton = null;
-
     function loadPDF(pdfPath) {
-      // Show loading screen
-      const loadingElement = document.querySelector('.loading');
-      const noPdfElement = document.querySelector('.no-pdf');
-      const pdfFrame = document.getElementById('pdfFrame');
+      const pdfFrame = document.getElementById("pdfFrame");
+      const loadingIndicator = document.getElementById("loadingIndicator");
+      const errorDisplay = document.getElementById("errorDisplay");
       
-      noPdfElement.style.display = 'none';
-      loadingElement.style.display = 'flex';
-      pdfFrame.style.display = 'none';
+      // Show loading indicator
+      pdfFrame.style.display = "none";
+      errorDisplay.style.display = "none";
+      loadingIndicator.style.display = "block";
       
-      // Update active button state
-      buttons.forEach(button => {
-        button.classList.remove('active');
-        if (button.textContent === event.target.textContent) {
-          button.classList.add('active');
-          currentActiveButton = button;
-        }
-      });
-
-      // Use direct PDF embedding instead of Google Docs viewer
-      pdfFrame.src = pdfPath;
+      // Encode the PDF path for URL
+      const encodedPath = encodeURIComponent(pdfPath);
+      const viewerURL = `https://docs.google.com/gview?url=${encodeURIComponent(location.origin)}/${encodedPath}&embedded=true`;
       
-      // Hide loading screen when PDF is loaded
+      // Set the iframe source
+      pdfFrame.src = viewerURL;
+      
+      // Handle load and error events
       pdfFrame.onload = function() {
-        loadingElement.style.display = 'none';
-        pdfFrame.style.display = 'block';
+        loadingIndicator.style.display = "none";
+        pdfFrame.style.display = "block";
       };
       
-      // Handle potential errors
       pdfFrame.onerror = function() {
-        loadingElement.style.display = 'none';
-        noPdfElement.style.display = 'flex';
-        noPdfElement.textContent = 'Failed to load PDF. Please try again.';
-        if (currentActiveButton) {
-          currentActiveButton.classList.remove('active');
-        }
+        loadingIndicator.style.display = "none";
+        errorDisplay.style.display = "block";
+        errorDisplay.textContent = "Failed to load the PDF. Please try again later or check the file path.";
       };
+      
+      // Fallback in case events don't fire
+      setTimeout(() => {
+        if (loadingIndicator.style.display !== "none") {
+          loadingIndicator.style.display = "none";
+          errorDisplay.style.display = "block";
+          errorDisplay.textContent = "Taking too long to load. Please check your internet connection.";
+        }
+      }, 10000); // 10 seconds timeout
     }
-
-    // Prevent right-click on iframe to disable Google Docs toolbar
-    document.getElementById('pdfFrame').addEventListener('contextmenu', function(e) {
-      e.preventDefault();
-    });
   </script>
 </body>
 </html>
- 
