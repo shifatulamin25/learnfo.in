@@ -18,16 +18,11 @@
       color: white;
       padding: 1rem;
       margin: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
     }
 
     .sub {
       font-style: oblique;
       font-size: medium;
-      margin-top: 10px;
     }
 
     .instruction {
@@ -63,7 +58,6 @@
       width: 100%;
       height: 80vh;
       padding: 10px;
-      display: none;
       position: relative;
     }
 
@@ -71,12 +65,17 @@
       width: 100%;
       height: 100%;
       border: none;
+      display: none;
     }
 
-    .placeholder-message, .loading-message {
-      font-size: 1rem;
-      color: #555;
-      margin-top: 20px;
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.2rem;
+      color: #4f46e5;
+      display: none;
     }
 
     .footer {
@@ -92,13 +91,13 @@
     @media (max-width: 600px) {
       .button-container {
         flex-direction: column;
-        align-items: center;
+        gap: 12px;
       }
     }
   </style>
 </head>
 <body>
-  <h2><img src="PHOTOS/main.logo.png" alt="" width="30">Learnfo</h2>
+  <h2><img src="PHOTOS/main.logo.png" alt="" width="30"> Learnfo</h2>
   <p class="sub">BENGALI DSC 101 SEMESTER 1</p>
   <p class="instruction">📄 Please select unit:</p>
 
@@ -110,37 +109,35 @@
     <button onclick="loadPDF('FYUG answer and solutions/bengali sem 1/DSC 101/BENGALI DSC 101 UNIT 5.pdf')">UNIT 5</button>
   </div>
 
-  <div class="placeholder-message" id="placeholder">👉 Please click one unit to view the PDF.</div>
-  <div class="loading-message" id="loading" style="display: none;">⏳ Loading PDF, please wait...</div>
-
-  <div class="viewer-container" id="viewer">
-    <iframe id="pdfFrame" src=""></iframe>
+  <div class="viewer-container">
+    <div class="loading" id="loading">🔄 Loading PDF...</div>
+    <iframe id="pdfFrame"></iframe>
   </div>
 
   <footer class="footer">
-    <p>Disclaimer: All PDF materials are used for educational purposes only. If any copyrighted material is used, full credit is given to the original owners. If you are the rightful owner and want it removed, please contact us at lernfo25@gmail.com</p>
+    <p>Disclaimer: All PDF materials are used for educational purposes only. If any copyrighted material is used, full credit is given to the original owners. If you are the rightful owner and want it removed, please contact us at learnfo25@gmail.com</p>
   </footer>
 
   <script>
     function loadPDF(pdfPath) {
-      const frame = document.getElementById("pdfFrame");
-      const viewer = document.getElementById("viewer");
+      const iframe = document.getElementById("pdfFrame");
       const loading = document.getElementById("loading");
-      const placeholder = document.getElementById("placeholder");
 
-      viewer.style.display = "none";
+      // Show loading message and hide iframe
       loading.style.display = "block";
-      placeholder.style.display = "none";
+      iframe.style.display = "none";
 
-      const url = `${location.origin}/${pdfPath}`;
-      frame.src = url;
+      // Convert relative to full absolute URL
+      const fullURL = `${location.origin}/${pdfPath}`;
 
-      frame.onload = () => {
+      iframe.src = fullURL;
+
+      // On load, hide loading
+      iframe.onload = function () {
         loading.style.display = "none";
-        viewer.style.display = "block";
+        iframe.style.display = "block";
       };
     }
   </script>
 </body>
 </html>
-
